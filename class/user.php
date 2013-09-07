@@ -30,10 +30,6 @@ class User {
 		return $this->pw;
 	}
 	
-	public function SetPw($pw) {
-		$this->pw = $pw;
-	}
-	
 	public function __toString() {
 		return implode('@', array('#ICIS#', 'USER', $this->uid, $this->id, $this->name));
 	}

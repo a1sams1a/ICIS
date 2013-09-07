@@ -51,14 +51,6 @@ static class UserAction {
 		
 		return $result;
 	}
-	
-	public static function ChangePassword($uid, $pw) {
-		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for change password
-		if ($result === false) return new Error('101', 'DB select fail');
-		
-		return 'success';
-	}
 		
 	public static function AuthUser($id, $pw) {
 		$dEngine = new DBEngine();

@@ -41,18 +41,6 @@ class Item {
 		return $this->statusList;
 	}
 	
-	public function SetDebtList($debtList) {
-		$this->debtList = $debtList;
-	}
-	
-	public function SetPayList($payList) {
-		$this->payList = $payList;
-	}
-	
-	public function SetStatusList($statusList) {
-		$this->statusList = $statusList;
-	}
-	
 	public function __toString() {
 		$debtstr = listToStr($debtList);
 		$paystr = listToStr($payList);
