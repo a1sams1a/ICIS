@@ -1,35 +1,70 @@
 <?php
 
-class item {
+class Item {
 	private $pid;
 	private $name;
-	private $date;
+	private $pdate;
+	private $debtList;
+	private $payList;
+	private $statusList;
 	
-	public function __construct($uid, $name, $pw) {
-		$this->uid = $uid;
+	public function __construct($pid, $name, $pdate, $debtList, $payList, $statusList) {
+		$this->pid = $pid;
 		$this->name = $name;
-		$this->pw = $pw;
-		$this->paylist = $paylist;
+		$this->pdate = $pdate;
+		$this->debtList = $debtList;
+		$this->payList = $payList;
+		$this->statusList = $statusList;
 	}
 	
-	public function getuid() {
-		return $this->uid;
+	public function GetPid() {
+		return $this->pid;
 	}
 	
-	public function getname() {
+	public function GetName() {
 		return $this->name;
 	}
 	
-	public function getpw() {
-		return $this->pw;
+	public function GetDate() {
+		return $this->pdate;
 	}
 	
-	public function setpw($pw) {
-		$this->pw = $pw;
+	public function GetDebtList() {
+		return $this->debtList;
+	}
+	
+	public function GetPayList() {
+		return $this->payList;
+	}
+	
+	public function GetStatusList() {
+		return $this->statusList;
+	}
+	
+	public function SetDebtList($debtList) {
+		$this->debtList = $debtList;
+	}
+	
+	public function SetPayList($payList) {
+		$this->payList = $payList;
+	}
+	
+	public function SetStatusList($statusList) {
+		$this->statusList = $statusList;
 	}
 	
 	public function __toString() {
-		//TODO
+		$debtstr = listToStr($debtList);
+		$paystr = listToStr($payList);
+		$statusstr = listToStr($statusList);
+		return implode('@', array('#ICIS#', 'ITEM', $this->pid, $this->name, $this->pdate, $debtstr, $paystr, $statusstr));
+	}
+	
+	private function listToStr($list) {
+		$str = '';
+		foreach ($list as $key => $value)
+			$str .= $key.':'.$value.',';
+		return substr($str, 0, -1);
 	}
 }
 

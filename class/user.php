@@ -1,6 +1,6 @@
 <?php
 
-class user {
+class User {
 	private $uid;
 	private $name;
 	private $pw;
@@ -12,24 +12,24 @@ class user {
 		$this->paylist = $paylist;
 	}
 	
-	public function getuid() {
+	public function GetUid() {
 		return $this->uid;
 	}
 	
-	public function getname() {
+	public function GetName() {
 		return $this->name;
 	}
 	
-	public function getpw() {
+	public function GetPw() {
 		return $this->pw;
 	}
 	
-	public function setpw($pw) {
+	public function SetPw($pw) {
 		$this->pw = $pw;
 	}
 	
 	public function __toString() {
-		//TODO
+		return implode('@', array('#ICIS#', 'USER', $this->uid, $this->name));
 	}
 } 
 
