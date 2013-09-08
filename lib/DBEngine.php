@@ -1,8 +1,10 @@
 <?php
 
+include_once('Secure.php');
+
 class DBEngine {
 	public function RunQuery($query) {
-		$mysqli = new mysqli("localhost", "my_user", "my_password", "world");
+		$mysqli = new mysqli('localhost', 'a1sams1a', Secure::GetDBPassword(), 'a1sams1a');
 		if ($mysqli->connect_errno)
 			return false;
 		

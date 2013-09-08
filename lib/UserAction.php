@@ -15,12 +15,12 @@ static class UserAction {
 			return new Error('211', 'INPUT_IS_TOO_SHORT');
 		
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery("SELECT * FROM user WHERE id = ".$id);
+		$result = $dEngine->RunQuery("SELECT * FROM ICIS_user WHERE id = ".$id);
 		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
 		if (count($result) != 0) return new Error('213', 'INPUT_MUST_BE_UNIQUE');
 		
-		$result = $dEngine->RunQuery("INSERT INTO user (id, name, pw) VALUES ('".$id."', '".$name."', '".$pw."')");
+		$result = $dEngine->RunQuery("INSERT INTO ICIS_user (id, name, pw) VALUES ('".$id."', '".$name."', '".$pw."')");
 		if ($result === false) return new Error('101', 'DB_INSERT_FAIL');
 		
 		return true;
@@ -31,7 +31,7 @@ static class UserAction {
 			return new Error('211', 'INPUT_IS_TOO_SHORT');
 			
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery("UPDATE user SET pw = '".$pw."' WHERE uid = ".$uid);
+		$result = $dEngine->RunQuery("UPDATE ICIS_user SET pw = '".$pw."' WHERE uid = ".$uid);
 		if ($result === false) return new Error('103', 'DB_UPDATE_FAIL');
 		
 		return true;
@@ -39,7 +39,7 @@ static class UserAction {
 
 	public static function GetUser($uid) {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery("SELECT * FROM user WHERE uid = ".$uid);
+		$result = $dEngine->RunQuery("SELECT * FROM ICIS_user WHERE uid = ".$uid);
 		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
 		if (count($result) == 0) return new Error('201', 'SUCH_UID_NOT_EXIST');
@@ -49,7 +49,7 @@ static class UserAction {
 	
 	public static function GetUserList() {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery("SELECT uid FROM user");
+		$result = $dEngine->RunQuery("SELECT uid FROM ICIS_user");
 		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
 		$userlist = array();
@@ -60,7 +60,7 @@ static class UserAction {
 		
 	public static function AuthUser($id, $pw) {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery("SELECT * FROM user WHERE id = '".$id."' AND pw = '".$pw."'");
+		$result = $dEngine->RunQuery("SELECT * FROM ICIS_user WHERE id = '".$id."' AND pw = '".$pw."'");
 		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
 		if (count($result) == 0) return false;
