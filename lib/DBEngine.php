@@ -1,5 +1,8 @@
 <?php
 
+if (!defined('__ICIS__'))
+	die('#ICIS#@ERROR@111@NO_DIRECT_RUN');
+
 include_once('Secure.php');
 
 class DBEngine {

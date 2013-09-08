@@ -1,5 +1,8 @@
 <?php
 
+if (!defined('__ICIS__'))
+	die('#ICIS#@ERROR@111@NO_DIRECT_RUN');
+
 class User {
 	private $uid;
 	private $id;
@@ -30,7 +33,7 @@ class User {
 		return $this->pw;
 	}
 	
-	public function __toString() {
+	public function ToString() {
 		return implode('@', array('#ICIS#', 'USER', $this->uid, $this->id, $this->name));
 	}
 } 

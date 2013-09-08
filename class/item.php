@@ -1,5 +1,8 @@
 <?php
 
+if (!defined('__ICIS__'))
+	die('#ICIS#@ERROR@111@NO_DIRECT_RUN');
+
 class Item {
 	private $pid;
 	private $name;
@@ -41,7 +44,7 @@ class Item {
 		return $this->statusList;
 	}
 	
-	public function __toString() {
+	public function ToString() {
 		$debtstr = listToStr($debtList);
 		$paystr = listToStr($payList);
 		$statusstr = listToStr($statusList);
