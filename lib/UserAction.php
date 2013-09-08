@@ -23,7 +23,7 @@ static class UserAction {
 		$result = $dEngine->RunQuery(); // TODO: Make Query for Insert user
 		if ($result === false) return new Error('101', 'DB select fail');
 		
-		return 'success';
+		return true;
 	}
 	
 	public static function UpdateUser($uid, $user) {
@@ -31,7 +31,7 @@ static class UserAction {
 		$result = $dEngine->RunQuery(); // TODO: Make Query for update user
 		if ($result === false) return new Error('102', 'DB update fail');
 		
-		return 'success';
+		return true;
 	}
 
 	public static function GetUser($uid) {
@@ -40,7 +40,7 @@ static class UserAction {
 		if ($result === false) return new Error('101', 'DB select fail');
 		
 		if (count($result) == 0) return new Error('203', 'User id '.$uid.' does not exist');
-		$userdata = $row[0];
+		$userdata = $result[0];
 		return new User($userdata['uid'], $userdata['id'], $userdata['name'], $userdata['pw']);
 	}
 	
@@ -49,7 +49,10 @@ static class UserAction {
 		$result = $dEngine->RunQuery(); // TODO: Make Query for get user list
 		if ($result === false) return new Error('101', 'DB select fail');
 		
-		return $result;
+		$userlist = array();
+		foreach ($result as $row)
+			array_push(GetUser($row['uid']), $userlist);  
+		return $userlist;
 	}
 		
 	public static function AuthUser($id, $pw) {
