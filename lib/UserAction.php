@@ -7,7 +7,7 @@ include_once ('./../class/User.php');
 include_once ('./../class/Item.php');
 include_once ('DBEngine.php');
 
-static class UserAction {
+class UserAction {
 	public static function MakeUser($id, $name, $pw) {
 		$dEngine = new DBEngine();
 		$result = $dEngine->RunQuery("SELECT * FROM ICIS_user WHERE id = ".$id);
@@ -21,8 +21,8 @@ static class UserAction {
 	}
 	
 	public static function ChangePassword($uid, $pw) {
-		if (strlen($pw) < 8) {
-			return new Error('211', 'INPUT_IS_TOO_SHORT');
+		if (strlen($pw) < 8)
+			return false;
 			
 		$dEngine = new DBEngine();
 		$result = $dEngine->RunQuery("UPDATE ICIS_user SET pw = '".$pw."' WHERE uid = ".$uid);
@@ -58,7 +58,7 @@ static class UserAction {
 		if ($result === false) return false;
 		
 		if (count($result) == 0) return false;
-		return $result['uid'];
+		return $result[0]['uid'];
 	}
 }
 

@@ -17,18 +17,18 @@ class DBEngine {
 		
 		if (strpos($query, 'SELECT') !== false)
 			$type = 'return';
-		else if (strpos($query, 'INSERT') !== false || strpos($query, 'UPDATE') !== false)
+		elseif (strpos($query, 'INSERT') !== false || strpos($query, 'UPDATE') !== false)
 			$type = 'no-return';
 		
 		if ($type == 'return') {
 			if ($dresult = $mysqli->query($query)) {
 				$success = true;
-				while($row = $dresult->fetch_array(MYSQLI_ASSOC)){
-					array_push($result, $row);
+				while($row = $dresult->fetch_array(MYSQLI_ASSOC))
+					$result[] = $row;
 				$dresult->free();
 			}
 		}
-		else if ($type == 'no-return') {
+		elseif ($type == 'no-return') {
 			if ($mysqli->query($query) === true) {
 				$success = true;
 				$result = 'success';

@@ -7,7 +7,7 @@ include_once ('./../class/User.php');
 include_once ('./../class/Item.php');
 include_once ('DBEngine.php');
 
-static class ItemAction {
+class ItemAction {
 	public static function MakeItem($name, $date, $debtlist, $paylist) {
 		if (strlen($name) < 5)
 			return new Error('211', 'INPUT_IS_TOO_SHORT');
