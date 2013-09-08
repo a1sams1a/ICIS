@@ -7,36 +7,36 @@ include_once ('DBEngine.php');
 static class ItemAction {
 	public static function MakeItem($name, $date, $debtlist, $paylist) {
 		if (strlen($name) < 5)
-			return new Error('201', '');
+			return new Error('211', 'INPUT_IS_TOO_SHORT');
 		
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for insert item
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("INSERT INTO item (name, date) VALUES ('".$name."', '".$date."')");
+		if ($result === false) return new Error('101', 'DB_INSERT_FAIL');
 		
-		$result = $dEngine->RunQuery(); // TODO: Make Query for get last item
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("SELECT pid FROM item ORDER BY pid DESC LIMIT 1");
+		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
 		$pid = $result[0]['pid'];
 		$statuslist = array();
 		foreach ($debtlist as $key => $value) {
-			$result = $dEngine->RunQuery(); // TODO: Make Query for insert itemdebt
-			if ($result === false) return new Error('101', 'DB select fail');
+			$result = $dEngine->RunQuery("INSERT INTO itemdebt (pid, uid, money) VALUES (".$pid.", ".$key.", ".$value.")");
+			if ($result === false) return new Error('101', 'DB_INSERT_FAIL');
 			
 			if (array_key_exists($key, $statuslist) === false)
-				array_push($statuslist, $key);
+				$statuslist[] = $key;
 		}
 		
 		foreach ($debtlist as $key => $value) {
-			$result = $dEngine->RunQuery(); // TODO: Make Query for insert itempay
-			if ($result === false) return new Error('101', 'DB select fail');
+			$result = $dEngine->RunQuery("INSERT INTO itempay (pid, uid, money) VALUES (".$pid.", ".$key.", ".$value.")");
+			if ($result === false) return new Error('101', 'DB_INSERT_FAIL');
 			
 			if (array_key_exists($key, $statuslist) === false)
-				array_push($statuslist, $key);
+				$statuslist[] = $key;
 		}
 
 		foreach ($statuslist as $person) {
-			$result = $dEngine->RunQuery(); // TODO: Make Query for insert itemstatus
-			if ($result === false) return new Error('101', 'DB select fail');
+			$result = $dEngine->RunQuery("INSERT INTO itempay (pid, uid, status) VALUES (".$pid.", ".$person.", 'FALSE')");
+			if ($result === false) return new Error('101', 'DB_INSERT_FAIL');
 		}
 		
 		return true;
@@ -44,51 +44,51 @@ static class ItemAction {
 
 	public static function GetItem($pid) {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for item
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("SELECT * FROM item WHERE pid = ".$pid);
+		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
-		if (count($result) == 0) return new Error('203', 'User id '.$uid.' does not exist');
+		if (count($result) == 0) return new Error('202', 'SUCH_PID_NOT_EXIST');
 		$itemdata = $result[0];
 		
 		$debtlist = array();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for debtlist
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("SELECT uid, money FROM itemdebt WHERE pid = ".$pid);
+		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		foreach ($result as $row)
-			array_push($row['uid'] => $row['money'], $debtlist);
+			$debtlist[$row['uid']] = $row['money'];
 		
 		$paylist = array();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for paylist
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("SELECT uid, money FROM itempay WHERE pid = ".$pid);
+		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		foreach ($result as $row)
-			array_push($row['uid'] => $row['money'], $paylist);
+			$paylist[$row['uid']] = $row['money'];
 		
 		$statuslist = array();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for statuslist
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("SELECT uid, status FROM itemstatus WHERE pid = ".$pid);
+		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		foreach ($result as $row)
-			array_push($row['uid'] => $row['status'], $statuslist);
-		
+			$statuslist[$row['uid']] = $row['status'];
+
 		return new Item($itemdata['pid'], $itemdata['name'], $itemdata['date'], $debtlist, $paylist, $statuslist);
 	}
 	
 	public static function GetItemList($uid) {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for get item list
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("SELECT pid FROM item");
+		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
 		$itemlist = array();
 		foreach ($result as $row) {
 			$item = GetItem($row['pid']);
 			if (array_key_exists($uid, $item->statuslist))
-				array_push($item, $itemlist);
+				$item, $itemlist[] = $item;
 		}
 		return $itemlist;
 	}
 	
 	public static function AcceptItem($pid, $uid) {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for acceptitem
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("UPDATE item SET status = 'TRUE' WHERE pid = ".$pid." AND uid = ".$uid);
+		if ($result === false) return new Error('103', 'DB_UPDATE_FAIL');
 
 		return true;
 	}

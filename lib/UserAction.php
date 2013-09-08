@@ -7,47 +7,50 @@ include_once ('DBEngine.php');
 static class UserAction {
 	public static function MakeUser($id, $name, $pw) {
 		if (strlen($id) < 4 || strlen($name) < 2)
-			return new Error('201', '');
+			return new Error('211', 'INPUT_IS_TOO_SHORT');
 		else if (strlen($id) > 15 || strlen($name) > 8)
-			return new Error('200', '');
+			return new Error('212', 'INPUT_IS_TOO_LONG');
 		
 		if (strlen($pw) < 8) {
-			return new Error('201', 'Password should be at least 8 characters');
+			return new Error('211', 'INPUT_IS_TOO_SHORT');
 		
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for check dup id
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("SELECT * FROM user WHERE id = ".$id);
+		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
-		if (count($result) != 0) return new Error('200', 'User id duplicate');
+		if (count($result) != 0) return new Error('213', 'INPUT_MUST_BE_UNIQUE');
 		
-		$result = $dEngine->RunQuery(); // TODO: Make Query for Insert user
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("INSERT INTO user (id, name, pw) VALUES ('".$id."', '".$name."', '".$pw."')");
+		if ($result === false) return new Error('101', 'DB_INSERT_FAIL');
 		
 		return true;
 	}
 	
-	public static function UpdateUser($uid, $user) {
+	public static function ChangePassword($uid, $pw) {
+		if (strlen($pw) < 8) {
+			return new Error('211', 'INPUT_IS_TOO_SHORT');
+			
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for update user
-		if ($result === false) return new Error('102', 'DB update fail');
+		$result = $dEngine->RunQuery("UPDATE user SET pw = '".$pw."' WHERE uid = ".$uid);
+		if ($result === false) return new Error('103', 'DB_UPDATE_FAIL');
 		
 		return true;
 	}
 
 	public static function GetUser($uid) {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for get userinfo
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("SELECT * FROM user WHERE uid = ".$uid);
+		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
-		if (count($result) == 0) return new Error('203', 'User id '.$uid.' does not exist');
+		if (count($result) == 0) return new Error('201', 'SUCH_UID_NOT_EXIST');
 		$userdata = $result[0];
 		return new User($userdata['uid'], $userdata['id'], $userdata['name'], $userdata['pw']);
 	}
 	
 	public static function GetUserList() {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for get user list
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("SELECT uid FROM user");
+		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
 		$userlist = array();
 		foreach ($result as $row)
@@ -57,8 +60,8 @@ static class UserAction {
 		
 	public static function AuthUser($id, $pw) {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery(); // TODO: Make Query for change password
-		if ($result === false) return new Error('101', 'DB select fail');
+		$result = $dEngine->RunQuery("SELECT * FROM user WHERE id = '".$id."' AND pw = '".$pw."'");
+		if ($result === false) return new Error('102', 'DB_SELECT_FAIL');
 		
 		if (count($result) == 0) return false;
 		return true;
