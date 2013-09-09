@@ -13,10 +13,10 @@ class Library {
 	}
 	
 	private static function filterValue($arr) {
-		$restricted = array(';', '\'', '@', '#', '$', '*', '"');
+		$restricted = array(";", "'", "@", "#", "$", "*", '"');
 		foreach ($arr as $input)
 			foreach ($restricted as $re)
-				if (strpos($input, $re) === true)
+				if (strpos($input, $re) !== false)
 					return false;
 		return true;
 	}
@@ -36,10 +36,22 @@ class Library {
 		if (Library::filterValue(array($id, $pw)) === false)
 			return implode('@', array('#ICIS#', 'ERROR', '201', 'CONTAIN_RESTRICTED_CHAR'));
 		
-		$uid = UserAction::AuthUser($id, $pw);
-		if ($uid !== false)
-			return implode('@', array('#ICIS#', 'COOKIE', $uid, Library::generateKey($uid)));
-		return implode('@', array('#ICIS#', 'ERROR', '301', 'NOT_VAILD_USER_INFO'));
+		$result = UserAction::AuthUser($id, $pw);
+		if ($result === false)
+			return implode('@', array('#ICIS#', 'ERROR', '301', 'NOT_VAILD_USER_INFO'));
+			
+		return implode('@', array('#ICIS#', 'COOKIE', $result['uid'], $result['name'], Library::generateKey($result['uid'])));
+	}
+	
+	public static function ChangePassword($uid, $pw) {
+		if (Library::filterValue(array($uid, $pw)) === false)
+			return implode('@', array('#ICIS#', 'ERROR', '201', 'CONTAIN_RESTRICTED_CHAR'));
+		
+		$uid = UserAction::ChangePassword($id, $pw);
+		if ($uid === false)
+			return implode('@', array('#ICIS#', 'ERROR', '202', 'INPUT_IS_TOO_SHORT'));
+			
+		return implode('@', array('#ICIS#', 'SUCCESS'));
 	}
 	
 	public static function Validate($uid, $key) {
@@ -91,14 +103,14 @@ class Library {
 		if (strlen($name) < 3 || strlen($date) < 10)
 			return implode('@', array('#ICIS#', 'ERROR', '202', 'INPUT_IS_TOO_SHORT'));
 
-		if (strlen($name) > 15 || strlen($date) > 10)
+		if (strlen($name) > 80 || strlen($date) > 10)
 			return implode('@', array('#ICIS#', 'ERROR', '203', 'INPUT_IS_TOO_LONG'));
 		
 		$debtlist = Library::strToList($debtliststr);
 		$paylist = Library::strToList($payliststr);
 		if ($debtlist === false || $paylist === false)
 			return implode('@', array('#ICIS#', 'ERROR', '204', 'INPUT_MUST_BE_LIST'));
-			
+		
 		$result = ItemAction::MakeItem($name, $date, $debtlist, $paylist);
 		if ($result === false)
 			return implode('@', array('#ICIS#', 'ERROR', '101', 'UNKNOWN_QUERY_ERROR'));

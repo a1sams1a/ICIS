@@ -45,13 +45,13 @@ class Item {
 	}
 	
 	public function ToString() {
-		$debtstr = listToStr($debtList);
-		$paystr = listToStr($payList);
-		$statusstr = listToStr($statusList);
+		$debtstr = Item::listToStr($this->debtList);
+		$paystr = Item::listToStr($this->payList);
+		$statusstr = Item::listToStr($this->statusList);
 		return implode('@', array('#ICIS#', 'ITEM', $this->pid, $this->name, $this->pdate, $debtstr, $paystr, $statusstr));
 	}
 	
-	private function listToStr($list) {
+	private static function listToStr($list) {
 		$str = '';
 		foreach ($list as $key => $value)
 			$str .= $key.':'.$value.',';

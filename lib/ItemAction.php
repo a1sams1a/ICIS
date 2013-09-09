@@ -9,13 +9,10 @@ include_once ('DBEngine.php');
 
 class ItemAction {
 	public static function MakeItem($name, $date, $debtlist, $paylist) {
-		if (strlen($name) < 5)
-			return new Error('211', 'INPUT_IS_TOO_SHORT');
-		
 		$dEngine = new DBEngine();
 		$result = $dEngine->RunQuery("INSERT INTO ICIS_item (name, date) VALUES ('".$name."', '".$date."')");
 		if ($result === false) return false;
-		
+
 		$result = $dEngine->RunQuery("SELECT pid FROM ICIS_item ORDER BY pid DESC LIMIT 1");
 		if ($result === false) return false;
 		
@@ -29,7 +26,7 @@ class ItemAction {
 				$statuslist[] = $key;
 		}
 		
-		foreach ($debtlist as $key => $value) {
+		foreach ($paylist as $key => $value) {
 			$result = $dEngine->RunQuery("INSERT INTO ICIS_itempay (pid, uid, money) VALUES (".$pid.", ".$key.", ".$value.")");
 			if ($result === false) return false;
 			
@@ -38,7 +35,7 @@ class ItemAction {
 		}
 
 		foreach ($statuslist as $person) {
-			$result = $dEngine->RunQuery("INSERT INTO ICIS_itempay (pid, uid, status) VALUES (".$pid.", ".$person.", 'FALSE')");
+			$result = $dEngine->RunQuery("INSERT INTO ICIS_itemstatus (pid, uid, status) VALUES (".$pid.", ".$person.", 'FALSE')");
 			if ($result === false) return false;
 		}
 		
@@ -52,7 +49,7 @@ class ItemAction {
 		
 		if (count($result) == 0) return new Error('202', 'SUCH_PID_NOT_EXIST');
 		$itemdata = $result[0];
-		
+
 		$debtlist = array();
 		$result = $dEngine->RunQuery("SELECT uid, money FROM ICIS_itemdebt WHERE pid = ".$pid);
 		if ($result === false) return false;
@@ -64,7 +61,7 @@ class ItemAction {
 		if ($result === false) return false;
 		foreach ($result as $row)
 			$paylist[$row['uid']] = $row['money'];
-		
+
 		$statuslist = array();
 		$result = $dEngine->RunQuery("SELECT uid, status FROM ICIS_itemstatus WHERE pid = ".$pid);
 		if ($result === false) return false;
@@ -81,8 +78,8 @@ class ItemAction {
 		
 		$itemlist = array();
 		foreach ($result as $row) {
-			$item = GetItem($row['pid']);
-			if (array_key_exists($uid, $item->statuslist))
+			$item = ItemAction::GetItem($row['pid']);
+			if (array_key_exists($uid, $item->GetStatusList()))
 				$itemlist[] = $item;
 		}
 		return $itemlist;
@@ -90,7 +87,7 @@ class ItemAction {
 	
 	public static function AcceptItem($pid, $uid) {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery("UPDATE ICIS_item SET status = 'TRUE' WHERE pid = ".$pid." AND uid = ".$uid);
+		$result = $dEngine->RunQuery("UPDATE ICIS_itemstatus SET status = 'TRUE' WHERE pid = ".$pid." AND uid = ".$uid);
 		if ($result === false) return false;
 
 		return true;

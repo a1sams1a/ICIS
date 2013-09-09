@@ -10,7 +10,7 @@ include_once ('DBEngine.php');
 class UserAction {
 	public static function MakeUser($id, $name, $pw) {
 		$dEngine = new DBEngine();
-		$result = $dEngine->RunQuery("SELECT * FROM ICIS_user WHERE id = ".$id);
+		$result = $dEngine->RunQuery("SELECT * FROM ICIS_user WHERE id = '".$id."'");
 		if ($result === false) return false;
 		if (count($result) != 0) return false;
 		
@@ -58,7 +58,7 @@ class UserAction {
 		if ($result === false) return false;
 		
 		if (count($result) == 0) return false;
-		return $result[0]['uid'];
+		return $result[0];
 	}
 }
 
