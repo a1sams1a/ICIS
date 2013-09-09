@@ -13,7 +13,7 @@ class Library {
 	}
 	
 	private static function filterValue($arr) {
-		$restricted = array(";", "'", "@", "#", "$", "*", '"');
+		$restricted = array(";", "'", "@", "#", "$", "*", '\\', '"');
 		foreach ($arr as $input)
 			foreach ($restricted as $re)
 				if (strpos($input, $re) !== false)
@@ -91,9 +91,23 @@ class Library {
 		
 		$result = '';
 		foreach ($itemlist as $item)
-			$result .= $item->ToString();
+			$result .= $item->ToString()."\n";
 			
 		return $result;
+	}
+	
+	public static function GiveMoney($uid, $touid, $date, $money) {
+		if (!Library::filterValue(array($uid, $touid, $date, $money)))
+			return implode('@', array('#ICIS#', 'ERROR', '201', 'CONTAIN_RESTRICTED_CHAR'));
+	
+		$debtlist = array($touid => $money);
+		$paylist = array($uid => $money);
+		
+		$result = ItemAction::MakeItem('채무 관계 정산', $date, $debtlist, $paylist);
+		if ($result === false)
+			return implode('@', array('#ICIS#', 'ERROR', '101', 'UNKNOWN_QUERY_ERROR'));
+			
+		return implode('@', array('#ICIS#', 'SUCCESS'));
 	}
 	
 	public static function AddItem($name, $date, $debtliststr, $payliststr) {
@@ -111,6 +125,15 @@ class Library {
 		if ($debtlist === false || $paylist === false)
 			return implode('@', array('#ICIS#', 'ERROR', '204', 'INPUT_MUST_BE_LIST'));
 		
+		$debtsum = 0; $paysum = 0;
+		foreach ($debtlist as $key => $value)
+			$debtsum += $value;
+		foreach ($paylist as $key => $value)
+			$paysum += $value;
+
+		if ($debtsum != $paysum)
+			return implode('@', array('#ICIS#', 'ERROR', '205', 'SUM_IS_NOT_EQUAL'));
+			
 		$result = ItemAction::MakeItem($name, $date, $debtlist, $paylist);
 		if ($result === false)
 			return implode('@', array('#ICIS#', 'ERROR', '101', 'UNKNOWN_QUERY_ERROR'));
@@ -136,7 +159,7 @@ class Library {
 		
 		$result = '';
 		foreach ($userlist as $user)
-			$result .= $user->ToString();
+			$result .= $user->ToString()."\n";
 			
 		return $result;
 	}
@@ -149,7 +172,7 @@ class Library {
 		$result = '';
 		foreach ($itemlist as $item)
 			if ($item->statusList[$uid] != 'TRUE')
-				$result .= $item->ToString();
+				$result .= $item->ToString()."\n";
 				
 		return $result;
 	}
