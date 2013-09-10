@@ -92,6 +92,21 @@ class ItemAction {
 
 		return true;
 	}
+	
+	public static function IsAllAgreed($pid) {
+		$dEngine = new DBEngine();
+		$result = $dEngine->RunQuery("SELECT uid, status FROM ICIS_itemstatus WHERE pid = ".$pid);
+		if ($result === false) return false;
+		
+		$allagreed = true;
+		foreach ($result as $row) {
+			if ($row['status'] != 'TRUE') {
+				$allagreed = false;
+				break;
+			}
+		}
+		return $allagreed;
+	}
 }
 
 ?>

@@ -60,6 +60,14 @@ class UserAction {
 		if (count($result) == 0) return false;
 		return $result[0];
 	}
+		
+	public static function GetNumberOfUser() {
+		$dEngine = new DBEngine();
+		$result = $dEngine->RunQuery("SELECT uid FROM ICIS_user");
+		if ($result === false) return false;
+
+		return count($result);
+	}
 }
 
 ?>

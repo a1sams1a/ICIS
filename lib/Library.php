@@ -6,6 +6,7 @@ if (!defined('__ICISAPI__'))
 define('__ICIS__', '0.1');
 include_once('UserAction.php');
 include_once('ItemAction.php');
+include_once('CalcAction.php');
 
 class Library {
 	private static function generateKey($uid) {
@@ -148,6 +149,12 @@ class Library {
 		$result = ItemAction::AcceptItem($pid, $uid);
 		if ($result === false)
 			return implode('@', array('#ICIS#', 'ERROR', '101', 'UNKNOWN_QUERY_ERROR'));
+		
+		if (ItemAction::IsAllAgreed($pid)) {
+			$result = CalcAction::UpdateStatus(ItemAction::GetItem($pid), UserAction::GetNumberOfUser());
+			if ($result === false)
+				return implode('@', array('#ICIS#', 'ERROR', '100', 'STATUS_UPDATE_FAIL'));
+		}
 			
 		return implode('@', array('#ICIS#', 'SUCCESS'));
 	}
