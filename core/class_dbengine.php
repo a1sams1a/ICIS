@@ -1,13 +1,13 @@
 <?php
 
-if (!defined('__ICIS__'))
+if (!defined('ICIS'))
 	die('#ICIS#@ERROR@111@NO_DIRECT_RUN');
 
-include_once('Secure.php');
+include_once('class_secure.php');
 
 class DBEngine {
 	public function RunQuery($query) {
-		$mysqli = new mysqli('localhost', 'a1sams1a', Secure::GetDBPassword(), 'a1sams1a');
+		$mysqli = new mysqli('localhost', 'usricis', Secure::GetDBPassword(), 'icis');
 		if ($mysqli->connect_errno)
 			return false;
 		
@@ -17,7 +17,7 @@ class DBEngine {
 		
 		if (strpos($query, 'SELECT') !== false)
 			$type = 'return';
-		elseif (strpos($query, 'INSERT') !== false || strpos($query, 'UPDATE') !== false)
+		elseif (strpos($query, 'INSERT') !== false || strpos($query, 'UPDATE') !== false || strpos($query, 'TRUNCATE') !== false)
 			$type = 'no-return';
 		
 		if ($type == 'return') {

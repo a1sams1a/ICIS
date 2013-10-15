@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('__ICIS__'))
+if (!defined('ICIS'))
 	die('#ICIS#@ERROR@111@NO_DIRECT_RUN');
 
 class User {
@@ -14,7 +14,6 @@ class User {
 		$this->id = $id;
 		$this->name = $name;
 		$this->pw = $pw;
-		$this->paylist = $paylist;
 	}
 	
 	public function GetUid() {

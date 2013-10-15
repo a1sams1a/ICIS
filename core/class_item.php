@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('__ICIS__'))
+if (!defined('ICIS'))
 	die('#ICIS#@ERROR@111@NO_DIRECT_RUN');
 
 class Item {

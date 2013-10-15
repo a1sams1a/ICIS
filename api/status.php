@@ -1,9 +1,9 @@
 <?php
 
-define('__ICISAPI__', '0.1');
-include_once('./../lib/Library.php');
-include_once('./../lib/LoginCheck.php');
+define('ICIS', '0.2');
+include_once('./../lib/library_api.php');
+include_once('./../lib/fnc_logincheck.php');
 
-echo Library::UserStatus($_COOKIE['uid']);
+echo APILibrary::UserStatus($_COOKIE['uid']);
 
 ?>

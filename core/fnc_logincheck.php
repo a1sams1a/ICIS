@@ -1,9 +1,9 @@
 <?php
 
-if (!defined('__ICISAPI__'))
+if (!defined('ICIS'))
 	die('#ICIS#@ERROR@111@NO_DIRECT_RUN');
 
-include_once('Library.php');
+include_once('library_common.php');
 
 if (!isset($_COOKIE['uid']) || !isset($_COOKIE['key']))
 	die('#ICIS#@ERROR@205@NOT_LOGGED_IN');
