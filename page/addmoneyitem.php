@@ -1,8 +1,8 @@
 <?php
 if (!defined('ICIS'))
 	die('Must be executed by index.php');
-	
-if (isset($_POST['money']) && isset($_POST['payto'])) {
+
+if (isset($_POST['money']) && isset($_POST['payto']) && $_POST['money'] != 0) {
 	$result = WebLibrary::GiveMoney($_COOKIE['uid'], $_POST['payto'], date('Y-m-d'), $_POST['money']);
 	if ($result === true)
 		echo '<meta http-equiv="refresh" content="0;url=?action=success">';

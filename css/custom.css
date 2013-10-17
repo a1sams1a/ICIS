@@ -4,9 +4,10 @@ body { position:relative; padding-top: 80px }
 .small-margin { margin: 5px 0 10px 0}
 .page-header { margin-top: -10px }
 
-/* Used in login.php */
 #login-page { background: #5E5E5E url('./../img/login-background.png'); }
 #login-form legend { padding-bottom: 10px; text-align:center; }
 
 #register-page { background: #5E5E6F url('./../img/register-background.png'); }
 #register-form legend { padding-bottom: 10px; text-align:center; }
+
+#info-page { background: #5E6F5E url('./../img/info-background.png'); }

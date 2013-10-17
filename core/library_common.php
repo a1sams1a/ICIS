@@ -21,19 +21,40 @@ class Library {
 		if (Library::filterValue(array($id, $pw)) === false) return false;
 		$result = UserAction::AuthUser($id, $pw);
 		if ($result === false) return false;
-		return array($result['uid'], $result['name'], Secure::GetKey($result['uid']));
+		return array($result['uid'], $result['name'], Secure::GetKey($result['uid'], $result['salt']));
 	}
 	
 	public static function ChangePassword($uid, $pw) {
 		if (Library::filterValue(array($uid, $pw)) === false) return false;
-		if (UserAction::ChangePassword($id, $pw) === false) return false;	
+		if (UserAction::ChangePassword($uid, $pw) === false) return false;	
+		return true;
+	}
+	
+	public static function ChangeSalt($uid) {
+		if (Library::filterValue(array($uid)) === false) return false;
+		if (UserAction::ChangeSalt($uid) === false) return false;	
+		return true;
+	}
+	
+	public static function KickUser() {
+		$n = UserAction::GetNumberOfUser();
+		for ($i = 2; $i <= $n; $i += 1)
+			if (Library::ChangeSalt($i) === false)
+				return false;
 		return true;
 	}
 	
 	public static function Validate($uid, $key) {
-		$corrkey = Secure::GetKey($uid);
+		$corrkey = Secure::GetKey($uid, Library::GetSalt($uid));
 		if ($corrkey == $key) return true;
 		return false;
+	}
+	
+	public static function GetSalt($uid) {
+		if (Library::filterValue(array($uid)) === false) return false;
+		$result = UserAction::GetUser($uid);
+		if ($result === false) return false;
+		return $result->GetSalt();
 	}
 	
 	public static function Register($id, $name, $pw) {

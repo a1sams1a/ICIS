@@ -17,12 +17,12 @@ if (isset($_COOKIE['uid']) && isset($_COOKIE['key'])) {
 	}
 	else
 		$banner = '<div class="alert alert-danger">  
-			<strong>해킹 시도 확인!</strong> 쿠키에 잘못된 값이 포함되어 있습니다.
+			<strong>로그아웃됨!</strong> Salt 변경 또는 관리자에 의해 강제 로그아웃되었습니다.
 		</div>';
 }
 
 if (isset($_POST['id']) && isset($_POST['pw'])) {
-	$result = WebLibrary::Login($_POST['id'], $_POST['pw']);
+	$result = WebLibrary::Login($_POST['id'], hash('sha512', $_POST['pw']));
 	if ($result !== false) {
 		setcookie('uid', $result[0], time() + 60 * 3600, '/icis');
 		setcookie('key', $result[1], time() + 60 * 3600, '/icis');

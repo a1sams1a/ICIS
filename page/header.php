@@ -47,6 +47,16 @@ if (!defined('ICIS'))
 								</ul>
 							</li>
 							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="?action=changepassword">비밀번호 변경</a>
+										<a href="?action=changesalt">Salt 변경</a>
+										<a href="?action=kickuser">강제 로그아웃</a>
+									</li>
+								</ul>
+							</li>
+							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">About<b class="caret"></b></a>
 								<ul class="dropdown-menu">
 									<li>

@@ -9,7 +9,8 @@ class WebLibrary {
 	public static function ShiftListArr($list) {
 		$newlist = array();
 		foreach ($list as $key => $value)
-			$newlist[$key + 1] = $value;
+			if ($value != 0)
+				$newlist[$key + 1] = $value;
 		return $newlist;
 	}
 	
@@ -28,9 +29,7 @@ class WebLibrary {
 		for ($i = 0; $i < count($userlist); $i += 1) {
 			$tablestr .= '<tr>';
 			$tablestr .= '<td>'.$userlist[$i]->GetName().'</td>';
-			$tablestr .= '<td><input type="text" class="form-control" pattern="[0-9]*" name="debt[]"></td>
-				<td><input type="text" class="form-control" pattern="[0-9]*" name="pay[]"></td>
-				</tr>';
+			$tablestr .= '<td><input type="text" class="form-control" pattern="[0-9]*" name="debt[]"></td><td><input type="text" class="form-control" pattern="[0-9]*" name="pay[]"></td></tr>';
 		}
 		return $tablestr;
 	}
@@ -39,7 +38,7 @@ class WebLibrary {
 		$selectstr = '';
 		$userlist = WebLibrary::UserList();
 		for ($i = 0; $i < count($userlist); $i += 1) {
-			if ($userlist[$i]->GetUid() == $uid) continue;
+			if ($userlist[$i]->GetUid() == $uid || $userlist[$i]->GetUid() == 1) continue;
 			$selectstr .= '<option value="'.$userlist[$i]->GetUid().'">';
 			$selectstr .= $userlist[$i]->GetName().'</option>';
 		}
@@ -91,9 +90,10 @@ class WebLibrary {
 		$limit = count($itemlist);
 		if ($islimit && $limit > 30) $limit = 30;
 		for ($i = 0; $i < $limit; $i += 1) {
+			if ($itemlist[$i]->GetName() == 'DONOTSHOWME') continue;
 			$statuslist = $itemlist[$i]->GetStatusList();
 			$allagree = true;
-			$meagree = ($statuslist[$uid] == 'TRUE');
+			$meagree = isset($statuslist[$uid]) ? ($statuslist[$uid] == 'TRUE') : true;
 			foreach ($statuslist as $key => $value)
 				if ($allagree && $value != 'TRUE')
 					$allagree = false;
@@ -131,6 +131,14 @@ class WebLibrary {
 	
 	public static function ChangePassword($uid, $pw) {
 		return Library::ChangePassword($uid, $pw);
+	}
+	
+	public static function ChangeSalt($uid) {
+		return Library::ChangeSalt($uid);
+	}
+	
+	public static function KickUser() {
+		return Library::KickUser();
 	}
 	
 	public static function Register($id, $name, $pw) {

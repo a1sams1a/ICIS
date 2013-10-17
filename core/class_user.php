@@ -8,12 +8,14 @@ class User {
 	private $id;
 	private $name;
 	private $pw;
+	private $salt;
 	
-	public function __construct($uid, $id, $name, $pw) {
+	public function __construct($uid, $id, $name, $pw, $salt) {
 		$this->uid = $uid;
 		$this->id = $id;
 		$this->name = $name;
 		$this->pw = $pw;
+		$this->salt = $salt;
 	}
 	
 	public function GetUid() {
@@ -30,6 +32,10 @@ class User {
 	
 	public function GetPw() {
 		return $this->pw;
+	}
+	
+	public function GetSalt() {
+		return $this->salt;
 	}
 	
 	public function ToString() {

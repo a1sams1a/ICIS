@@ -30,7 +30,7 @@ class ItemAction {
 			$result = $dEngine->RunQuery("INSERT INTO itemdebt (pid, uid, money) VALUES (".$pid.", ".$key.", ".$value.")");
 			if ($result === false) return false;
 			
-			if (array_key_exists($key, $statuslist) === false)
+			if (in_array($key, $statuslist) === false)
 				$statuslist[] = $key;
 		}
 		
@@ -39,7 +39,7 @@ class ItemAction {
 			$result = $dEngine->RunQuery("INSERT INTO itempay (pid, uid, money) VALUES (".$pid.", ".$key.", ".$value.")");
 			if ($result === false) return false;
 			
-			if (array_key_exists($key, $statuslist) === false)
+			if (in_array($key, $statuslist) === false)
 				$statuslist[] = $key;
 		}
 
@@ -88,7 +88,7 @@ class ItemAction {
 		$itemlist = array();
 		foreach ($result as $row) {
 			$item = ItemAction::GetItem($row['pid']);
-			if (array_key_exists($uid, $item->GetStatusList()))
+			if (array_key_exists($uid, $item->GetStatusList()) || $uid == 1)
 				$itemlist[] = $item;
 		}
 		return $itemlist;

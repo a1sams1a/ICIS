@@ -31,7 +31,7 @@ if (isset($_POST['id']) && isset($_POST['pw']) && isset($_POST['pw2']) && isset(
 			<strong>오류!</strong> 비밀번호를 다시 입력하십시오.
 		</div>';
 	else {
-		$result = WebLibrary::Register($_POST['id'], $_POST['name'], $_POST['pw']);
+		$result = WebLibrary::Register($_POST['id'], $_POST['name'], hash('sha512', $_POST['pw']));
 		if ($result !== false) {
 			echo '<script type="text/javascript">alert("회원가입이 완료되었습니다. 로그인하십시오."); </script>';
 			echo '<meta http-equiv="refresh" content="0;url=./login.php">';
